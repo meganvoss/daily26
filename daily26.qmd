@@ -1,0 +1,42 @@
+---
+title: "daily26"
+format:
+  html:
+    self-contained: true
+execute:
+  echo: true
+---
+
+
+```{r}
+url <- '/vsicurl/https://raw.githubusercontent.com/mikejohnson51/csu-ess-330/refs/heads/main/resources/foco-elev-cm.tif'
+rast_obj <- terra::rast(url)
+
+```
+
+## The raster data represents elevation in the Fort Collins area, originally measured in centimeters. It consists of a single-layer raster with regularly spaced grid cells, where each cell holds an elevation value. After reading the raster into R using the terra package, the data shows a continuous numeric distribution with no categorical parts. The structure confirms it's a single-band raster which would work well for spatial analysis and visualization.
+
+```{r}
+elev_feet <- rast_obj * 0.0328084
+
+```
+
+```{r}
+elev_vals <- terra::values(elev_feet, dataframe = TRUE)
+
+```
+
+```{r}
+gg <- ggdensity(elev_vals, x = "dem", 
+                fill = "lightblue", 
+                title = "Elevation Density (Feet)", 
+                xlab = "Elevation (feet)")
+print(gg)
+
+```
+
+```{r}
+ggsave("elevation_density.png", gg)
+
+```
+
